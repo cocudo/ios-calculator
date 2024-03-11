@@ -9,11 +9,14 @@ import SwiftUI
 
 struct VerticalButtonStack: View {
     
+    @ObservedObject var viewModel: ViewModel
+    
     let data: [KeyboardButton] //El
     let columns: [GridItem]
     let width: CGFloat
     
-    init(data: [KeyboardButton], columns: [GridItem], width: CGFloat) {
+    init(viewModel: ViewModel, data: [KeyboardButton], columns: [GridItem], width: CGFloat) {
+        self.viewModel = viewModel
         self.data = data
         self.columns = columns
         self.width = width
@@ -22,8 +25,10 @@ struct VerticalButtonStack: View {
     var body: some View {
         LazyVGrid(columns: columns, spacing: 12) {
             ForEach(data, id: \.self) { model in
-                Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
-                    if(model.isDoubleWidth){
+                Button(action: {
+                    viewModel.logic(key: model)
+                }, label: {
+                    if(model.isDoubleWidth) {
                         Rectangle()
                             .foregroundColor(model.backgroundColor)
                             .overlay(
@@ -31,9 +36,9 @@ struct VerticalButtonStack: View {
                                     .font(.title)
                                     .offset(x: width * 0.22 * 0.5)
                             )
-                            .frame(width: width * 2 * 0.22,
+                            .frame(width: width * 2 * 0.235,
                                    height: width * 0.22)
-                    }else{
+                    } else {
                         Text(model.title)
                             .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
                             .frame(width: width * 0.22,
@@ -51,12 +56,12 @@ struct VerticalButtonStack: View {
 }
 
 #Preview {
-    VerticalButtonStack(data: Matrix.firstSectionData,
-                        columns: Matrix.firstSectionGrid(390 * 0.25),
-                        width: 390)
-    .previewLayout(.sizeThatFits)
-    VerticalButtonStack(data: Matrix.secondSectionData,
-                        columns: Matrix.secondSectionGrid(390 * 0.25),
-                        width: 390)
-    .previewLayout(.sizeThatFits)
+    VStack {
+        VerticalButtonStack(viewModel: ViewModel(),data: Matrix.firstSectionData,
+                            columns: Matrix.firstSectionGrid(390 * 0.25),
+                            width: 390)
+        VerticalButtonStack(viewModel: ViewModel(),data: Matrix.secondSectionData,
+                            columns: Matrix.secondSectionGrid(390 * 0.25),
+                            width: 390)
+    }
 }

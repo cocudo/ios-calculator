@@ -8,14 +8,36 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @StateObject var viewmodel = ViewModel()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        ZStack{
+            Color.black.ignoresSafeArea()
+            GeometryReader { proxy in
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Text(viewmodel.textFieldValue)
+                            .foregroundColor(.white)
+                            .font(.system(size: 100, weight: .regular))
+                            .frame(height: 100)
+                            .padding(.trailing, 20)
+                    }
+                    VerticalButtonStack(
+                        viewModel: viewmodel,
+                        data: Matrix.firstSectionData, 
+                        columns: Matrix.firstSectionGrid(proxy.size.width * 0.25),
+                        width: proxy.size.width)
+                    VerticalButtonStack(
+                        viewModel: viewmodel,
+                        data: Matrix.secondSectionData,
+                        columns: Matrix.secondSectionGrid(proxy.size.width * 0.25),
+                        width: proxy.size.width)
+                }
+            }
         }
-        .padding()
     }
 }
 
